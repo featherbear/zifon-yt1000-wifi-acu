@@ -30,4 +30,12 @@ Big ceebs.
 # Method 5
 
 Place the new `MCU` inline between `U3` and the two motor drivers (`TC118S.PAN`, `TC118S.TILT`).  
-Somehow have to pass power from `SW` (tilt stop switch) to `TC118S.TILT`
+Power from `SW` to `TC118S.TILT` is connected on the PCB, so just intercept and pass through `INA` and `INB` states.  
+A bit laborious to desolder the TC118S ICs and then find a PCB to put them on
+
+---
+
+# Method 6
+
+Buy my own `JDY-40` and just emit the same wireless serial signals from an `MCU`.  
+Could be either built into the device, or just near me.
