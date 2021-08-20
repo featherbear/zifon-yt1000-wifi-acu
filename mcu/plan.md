@@ -10,7 +10,8 @@ Will however not allow both motors to operate simultaneously as the original MCU
 ## Method 2
 
 Place the new `MCU` inline between the `EY-40` and `U3`, passthrough serial commands but also add own with priority.  
-Need to ensure that the `EY-40` isn't interrupted (are they always 3 byte messages?).  \
+Need to ensure that the `EY-40` isn't interrupted (are they always 3 byte messages?).  
+Will however not allow both motors to operate simultaneously as the original MCU (`U3`)  does not support it
 
 ---
 
@@ -18,7 +19,12 @@ Need to ensure that the `EY-40` isn't interrupted (are they always 3 byte messag
 
 Place both the `EY-40.TX` and new `MCU.TX` parallel to `U3.RX`.  
 Will need to pull `MCU.TX` (high???) to allow `EY-40.TX` to still operate.  
-Or maybe use diodes?
+Or maybe use diodes?  
+Will however not allow both motors to operate simultaneously as the original MCU (`U3`)  does not support it
+
+EDIT: Use MCU's internal pullup resistor mode
+
+EDIT: Spamming alternate axis mpvement instructions isn't very efficient
 
 ---
 
