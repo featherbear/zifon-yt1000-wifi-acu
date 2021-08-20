@@ -2,11 +2,9 @@
 
 #include "esp32-ptz/esp32-ptz.hpp"
 
-#define SERIAL2_PIN 17
-
 void setup() {
     Serial.begin(9600);
-    initSerial(Serial2, SERIAL2_PIN, U2TXD_OUT_IDX);
+    initSerial(Serial2, /* SERIAL2_PIN */ 17, U2TXD_OUT_IDX);
 
     // Pin D2
     pinMode(2, INPUT);
