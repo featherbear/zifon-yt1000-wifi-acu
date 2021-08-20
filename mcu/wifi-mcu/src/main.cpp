@@ -33,8 +33,8 @@ void loop() {
             // Serial2.end();
 
             // esp32-hal-uart::uartDetachTx
-            pinMode(SERIAL2_PIN, INPUT);
             pinMatrixOutDetach(SERIAL2_PIN, false, false);
+            pinMode(SERIAL2_PIN, INPUT); // This line has to appear after pinMatrixOutDetach
 
             Serial.println(" OK");
         }
