@@ -1,10 +1,12 @@
 #include <Arduino.h>
 
+#include "esp32-ptz/esp32-ptz.hpp"
+
 #define SERIAL2_PIN 17
 
 void setup() {
     Serial.begin(9600);
-    Serial2.begin(9600);
+    initSerial(Serial2, SERIAL2_PIN, U2TXD_OUT_IDX);
 
     // Pin D2
     pinMode(2, INPUT);
@@ -19,23 +21,11 @@ void loop() {
         flag = !flag;
         if (flag) {
             Serial.print("Enabling...");
-            // // Doing a serial2.begin is slow...
-            // Serial2.begin(9600);
-
-            // esp32-hal-uart::uartAttachTx
-            pinMode(SERIAL2_PIN, OUTPUT);
-            pinMatrixOutAttach(SERIAL2_PIN, U2TXD_OUT_IDX, false, false);
-
+            resumeSerial();
             Serial.println(" OK");
         } else {
             Serial.print("Disabling...");
-            // // Doing a serial2.begin is slow...
-            // Serial2.end();
-
-            // esp32-hal-uart::uartDetachTx
-            pinMatrixOutDetach(SERIAL2_PIN, false, false);
-            pinMode(SERIAL2_PIN, INPUT); // This line has to appear after pinMatrixOutDetach
-
+            pauseSerial();
             Serial.println(" OK");
         }
     }
