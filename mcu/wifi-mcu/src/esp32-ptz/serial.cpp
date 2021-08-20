@@ -1,6 +1,4 @@
-#include "esp32-ptz.hpp"
-
-#include <Arduino.h>
+#include "serial.hpp"
 
 uint8_t TX_PIN;
 uint8_t FN_PORT;

@@ -1,7 +1,9 @@
 #include <Arduino.h>
-#include "../ptz.h"
 
-void initSerial(HardwareSerial& serialInstance, uint8_t txPin, uint8_t function);
-void endSerial();
-void pauseSerial();
-void resumeSerial();
+#ifndef _ESP32_PTZ__H
+#define _ESP32_PTZ__H
+
+#include "../ptz.h"
+#include "serial.hpp"
+
+#endif
