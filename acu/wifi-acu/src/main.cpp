@@ -1,14 +1,17 @@
 #include <Arduino.h>
+
 #include "arduino-ptz/arduino-ptz.hpp"
 
-#define BOOT_CONFIG_PIN 2
+#define BOOT_CONFIG_PIN D5
+
+#define UART_SERIAL_DEV Serial1
+#define UART_SERIAL_PIN D4
 
 void setup() {
     Serial.begin(9600);
-    initSerial(Serial2, /* SERIAL2_PIN */ 17, U2TXD_OUT_IDX);
+    initSerial(UART_SERIAL_DEV, UART_SERIAL_PIN);
 
-    // Pin D2
-    pinMode(2, INPUT);
+    pinMode(BOOT_CONFIG_PIN, INPUT);
 }
 
 unsigned long last = 0;
@@ -30,5 +33,5 @@ void loop() {
     }
 
     // Send TILT_UP on channel 10
-    if (flag) Serial2.write("\x6a\xca\x6a");
+    if (flag) UART_SERIAL_DEV.write("\x6a\xca\x6a");
 }
