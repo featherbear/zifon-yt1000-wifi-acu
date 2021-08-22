@@ -4,11 +4,11 @@ bool hasInit = false;
 
 namespace Config {
 
-static String ssid;
-static String password;
-static bool isDHCP;
-static String ip;
-static String mask;
+String ssid;
+String password;
+bool isDHCP;
+String ip;
+String mask;
 
 #define __filepath_ssid "/cfg/ssid"
 #define __filepath_password "/cfg/password"

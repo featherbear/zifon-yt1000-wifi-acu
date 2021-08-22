@@ -2,11 +2,11 @@
 
 namespace Config {
 
-static String ssid;
-static String password;
-static bool isDHCP;
-static String ip;
-static String mask;
+extern String ssid;
+extern String password;
+extern bool isDHCP;
+extern String ip;
+extern String mask;
 
 void begin();
 void set_ssid(const char *val);
