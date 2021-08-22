@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "arduino-ptz/arduino-ptz.hpp"
 
 #include "esp32-ptz/esp32-ptz.hpp"
 
