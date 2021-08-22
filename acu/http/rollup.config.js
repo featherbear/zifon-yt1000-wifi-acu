@@ -1,13 +1,36 @@
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-
+import path from 'path'
+import fs from 'fs'
 const production = !process.env.ROLLUP_WATCH;
+
+let replaceMap = {}
+let configuratorData = path.join(__dirname, '../wifi-acu', 'src/utils/configurator_data.h');
+if (fs.existsSync(configuratorData)) {
+	let fileData = fs.readFileSync(configuratorData, 'utf-8');
+	/namespace WWW_PATHS.+?{(.*);.+?namespace WWW_PATHS/s.exec(fileData)[1].trim().split(";").map(s => s.trim()).forEach(cLine => {
+		let [lhs, assignment] = cLine.split("=").flatMap(toks => toks.trim())
+		lhs = lhs.split(" ").map(toks => toks.trim())
+		
+		let charTokenIdx;
+		let matcher;
+		if ((charTokenIdx = lhs.indexOf("char")) > -1 && (lhs.length - charTokenIdx > 1) && (matcher = /(.+?)\[.*\]$/.exec(lhs[charTokenIdx + 1]))) {
+			replaceMap["global." + matcher[1]] = assignment;
+		} else if ((charTokenIdx = lhs.indexOf("char*")) > -1 && (lhs.length - charTokenIdx > 1)) {
+			replaceMap["global." + lhs[charTokenIdx]] = assignment;
+		}
+	})
+
+	console.info("Replacements have been set up for", replaceMap);
+}
+
 
 function serve() {
 	let server;
@@ -39,6 +62,10 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+			preventAssignment: true,
+			values: replaceMap
+		}),
 		svelte({
 			preprocess: sveltePreprocess({ sourceMap: !production }),
 			compilerOptions: {
