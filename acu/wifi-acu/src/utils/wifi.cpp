@@ -2,6 +2,7 @@
 
 #include <ArduinoJson.h>
 
+#include "config.hpp"
 #include "configurator.hpp"
 
 namespace WifiUtils {
@@ -24,6 +25,8 @@ String getSSID() {
 }
 
 void initWiFi() {
+    Config::begin();
+
     WiFi.onStationModeDisconnected([](const WiFiEventStationModeDisconnected &event) {
         Serial.println("Disconnected from WiFi access point");
         Serial.print("WiFi lost connection. Reason: ");
@@ -36,32 +39,22 @@ void initWiFi() {
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(("PT-" + getMACPrefix()).c_str());
 
-    String ssid = "TODO: STRING";
-    String password = "TODO: PASSWORD";
-    bool useDHCP = true;  // TODO: DHCP
-    String ip = "TODO: ip";
-    String mask = "TODO: mask";
-    // preferences.begin(NVR_KEY_WIFI, true);
-    // String ssid = preferences.getString("ssid");
-    // String password = preferences.getString("password");
-    // bool useDHCP = preferences.getBool("useDHCP", true);
-
-    if (ssid.isEmpty() || (!useDHCP && (ip.isEmpty() || mask.isEmpty()))) {
+    if (Config::ssid.isEmpty() || (!Config::isDHCP && (Config::ip.isEmpty() || Config::mask.isEmpty()))) {
         Serial.println("Required WiFi configuration options not set. Starting configurator...");
         Configurator::startConfigurator();
     }
 
-    if (!useDHCP) {
+    if (!Config::isDHCP) {
         IPAddress localIP;
-        localIP.fromString(ip);
+        localIP.fromString(Config::ip);
         IPAddress subnetMask;
-        subnetMask.fromString(mask);
+        subnetMask.fromString(Config::mask);
 
         // Ignore gateway
         WiFi.config(localIP, localIP, subnetMask);
     }
 
-    WiFi.begin(ssid.c_str(), password.isEmpty() ? NULL : password.c_str());
+    WiFi.begin(Config::ssid.c_str(), Config::password.isEmpty() ? NULL : Config::password.c_str());
 }
 
 String discoverNetworks() {

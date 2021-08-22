@@ -5,6 +5,7 @@
 #include <Hash.h>
 #include <LittleFS.h>
 
+#include "config.hpp"
 #include "configurator_data.h"
 #include "wifi.hpp"
 
@@ -25,14 +26,8 @@ static void setWifiIPMode(bool isDHCP, const char* ip, const char* mask);
 // Preferences wifiPreferences;
 
 static void setWifiAuth(const char* ssid, const char* password) {
-    File f;
-    f = LittleFS.open("/cfg/ssid", "w");
-    f.write(ssid);
-    f.close();
-
-    f = LittleFS.open("/cfg/password", "w");
-    f.write(password);
-    f.close();
+    Config::set_ssid(ssid);
+    Config::set_password(password);
 }
 
 static void setWifiIPMode(bool isDHCP) {
@@ -40,24 +35,17 @@ static void setWifiIPMode(bool isDHCP) {
 }
 
 static void setWifiIPMode(bool isDHCP, const char* ip, const char* mask) {
-    File f;
-
-    f = LittleFS.open("/cfg/isDHCP", "w");
-    f.write(isDHCP ? "true" : "false");
-    f.close();
+    Config::set_isDHCP(isDHCP);
 
     if (!isDHCP) {
-        f = LittleFS.open("/cfg/ip", "w");
-        f.write(ip);
-        f.close();
-
-        f = LittleFS.open("/cfg/mask", "w");
-        f.write(mask);
-        f.close();
+        Config::set_ip(ip);
+        Config::set_mask(mask);
     }
 }
 
 void startConfigurator() {
+    Config::begin();
+
     WiFi.disconnect();
     WiFi.mode(WIFI_AP_STA);
 
@@ -92,15 +80,13 @@ void startConfigurator() {
 
         StaticJsonDocument<1024> doc;
 
-        // {
-        //     wifiPreferences.begin(NVR_KEY_WIFI, true);
-        //     doc["ssid"] = wifiPreferences.getString("ssid");
-        //     doc["password"] = wifiPreferences.getString("password");
-        //     doc["mode"] = wifiPreferences.getBool("useDHCP", true) ? "dhcp" : "static";
-        //     doc["static_ip"] = wifiPreferences.getString("ip");
-        //     doc["static_mask"] = wifiPreferences.getString("mask");
-        //     wifiPreferences.end();
-        // }
+        {
+            doc["ssid"] = Config::ssid;
+            doc["password"] = Config::password;
+            doc["mode"] = Config::isDHCP ? "dhcp" : "static";
+            doc["static_ip"] = Config::ip;
+            doc["static_mask"] = Config::mask;
+        }
 
         serializeJson(doc, response);
         server->send(200, FPSTR(CONTENT_TYPES::JSON), response);
@@ -126,7 +112,7 @@ void startConfigurator() {
     });
 
     LittleFS.begin();
-    server->serveStatic("/", LittleFS, "/www");
+    server->serveStatic("/", LittleFS, "/www/");
 
     server->onNotFound([]() {
         String path = server->uri();
