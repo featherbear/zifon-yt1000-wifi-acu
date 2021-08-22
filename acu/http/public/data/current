@@ -1,0 +1,7 @@
+{
+    "ssid": "stub ssid",
+    "password": "stub password",
+    "mode": "dhcp",
+    "static_ip": "1.2.3.4",
+    "static_mask": "255.255.255.0"
+}
