@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "arduino-ptz/arduino-ptz.hpp"
 
-#include "esp32-ptz/esp32-ptz.hpp"
+#define BOOT_CONFIG_PIN 2
 
 void setup() {
     Serial.begin(9600);
