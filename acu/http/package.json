@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "rimraf public/build && rollup -c",
+    "build": "rimraf public/www/app && rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear",
+    "start": "sirv public/www --no-clear",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {

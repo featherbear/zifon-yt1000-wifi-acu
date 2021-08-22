@@ -59,7 +59,7 @@ export default {
 		sourcemap: !production,
 		format: 'iife',
 		name: 'app',
-		file: 'public/build/bundle.js'
+		file: 'public/www/app/bundle.js'
 	},
 	plugins: [
 		replace({
