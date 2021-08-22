@@ -1,6 +1,4 @@
 #include <Arduino.h>
-#include <ESP8266Wifi.h>
-#include <ESP8266mDNS.h>
 
 #include "arduino-ptz/arduino-ptz.hpp"
 #include "utils/configurator.hpp"
@@ -23,15 +21,14 @@ void setup() {
     // if so, open wireless configurator
     if (digitalRead(BOOT_CONFIG_PIN) == HIGH) {
         Serial.println("Boot config pin pressed...");
-        beginConfigurator();
+        Configurator::startConfigurator();
     }
 
+
+    WifiUtils::initWiFi();
+    WifiUtils::waitForConnect();
     // TODO: Connect / Host wireless
     // Try to connect to WiFi
-}
-
-// Kinda just yoinked this out of Talyte - https://github.com/featherbear/talyte/blob/8db9e89ccb8edcd62d30c070576bf882d8d47efc/src/standalone/utils/configurator.cpp#L59
-void beginConfigurator() {
 }
 
 // unsigned long last = 0;

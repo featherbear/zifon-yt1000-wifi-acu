@@ -49,8 +49,9 @@ static void setWifiIPMode(bool isDHCP, const char* ip, const char* mask) {
 
 void startConfigurator() {
     WiFi.disconnect();
-    WiFi.mode(WIFI_AP);
+    WiFi.mode(WIFI_AP_STA);
 
+    WiFi.setHostname(("PT-" + WifiUtils::getMACPrefix()).c_str());
     WiFi.softAP(WiFi.getHostname());
     IPAddress IP = WiFi.softAPIP();
 
