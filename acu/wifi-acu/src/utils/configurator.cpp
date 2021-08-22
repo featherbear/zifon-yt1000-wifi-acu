@@ -1,10 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <Hash.h>
-// #include <FS.h>
-// #include <spiffs/spiffs.h>
-#include <ESP8266WebServer.h>
+#include <LittleFS.h>
 
 #include "configurator_data.h"
 #include "wifi.hpp"
@@ -14,8 +13,6 @@
 #endif
 
 namespace Configurator {
-
-static void loop();
 
 static std::unique_ptr<WebServer> server = NULL;
 
@@ -28,23 +25,36 @@ static void setWifiIPMode(bool isDHCP, const char* ip, const char* mask);
 // Preferences wifiPreferences;
 
 static void setWifiAuth(const char* ssid, const char* password) {
-    // wifiPreferences.begin(NVR_KEY_WIFI, false);
-    // wifiPreferences.putString("ssid", ssid);
-    // wifiPreferences.putString("password", password);
-    // wifiPreferences.end();
+    File f;
+    f = LittleFS.open("/cfg/ssid", "w");
+    f.write(ssid);
+    f.close();
+
+    f = LittleFS.open("/cfg/password", "w");
+    f.write(password);
+    f.close();
 }
 
 static void setWifiIPMode(bool isDHCP) {
     setWifiIPMode(isDHCP, NULL, NULL);
 }
+
 static void setWifiIPMode(bool isDHCP, const char* ip, const char* mask) {
-    // wifiPreferences.begin(NVR_KEY_WIFI, false);
-    // wifiPreferences.putBool("useDHCP", isDHCP);
-    // if (!isDHCP) {
-    //     wifiPreferences.putString("ip", ip);
-    //     wifiPreferences.putString("mask", mask);
-    // }
-    // wifiPreferences.end();
+    File f;
+
+    f = LittleFS.open("/cfg/isDHCP", "w");
+    f.write(isDHCP ? "true" : "false");
+    f.close();
+
+    if (!isDHCP) {
+        f = LittleFS.open("/cfg/ip", "w");
+        f.write(ip);
+        f.close();
+
+        f = LittleFS.open("/cfg/mask", "w");
+        f.write(mask);
+        f.close();
+    }
 }
 
 void startConfigurator() {
@@ -115,9 +125,8 @@ void startConfigurator() {
         ESP.restart();
     });
 
-    // TODO:
-    // SPIFFS.begin();
-    // server->serveStatic("/", SPIFFS, "/");
+    LittleFS.begin();
+    server->serveStatic("/", LittleFS, "/www");
 
     server->onNotFound([]() {
         String path = server->uri();
@@ -125,17 +134,15 @@ void startConfigurator() {
         Serial.println("handleFileRead: " + path);
         if (path.endsWith("/")) path += "index.html";
 
-        if (!false) {
-            // if (!SPIFFS.exists(path)) {
+        if (!LittleFS.exists(path)) {
             Serial.println("\tFile Not Found");
             server->send(404, FPSTR(CONTENT_TYPES::PLAIN), "404: Not Found");
             return;
         }
 
-        // TODO:
-        // File file = SPIFFS.open(path, "r");
-        // server->streamFile(file, getContentType(path));
-        // file.close();
+        File file = LittleFS.open(path, "r");
+        server->streamFile(file, getContentType(path));
+        file.close();
     });
 
     server->begin();
