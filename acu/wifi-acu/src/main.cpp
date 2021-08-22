@@ -24,11 +24,8 @@ void setup() {
         Configurator::startConfigurator();
     }
 
-
     WifiUtils::initWiFi();
     WifiUtils::waitForConnect();
-    // TODO: Connect / Host wireless
-    // Try to connect to WiFi
 }
 
 // unsigned long last = 0;
