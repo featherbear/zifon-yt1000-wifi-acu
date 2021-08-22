@@ -4,11 +4,15 @@ uint8_t TX_PIN;
 uint8_t FN_PORT;
 HardwareSerial* SERIAL_INSTANCE;
 
-void initSerial(HardwareSerial& serialInstance, uint8_t txPin, uint8_t function = 0) {
+void initSerial(HardwareSerial& serialInstance, uint8_t txPin) {
     SERIAL_INSTANCE = &serialInstance;
     TX_PIN = txPin;
-    FN_PORT = function;
     SERIAL_INSTANCE->begin(PT__SERIAL_BAUD);
+}
+
+void initSerial(HardwareSerial& serialInstance, uint8_t txPin, uint8_t function) {
+    FN_PORT = function;
+    initSerial(serialInstance, txPin);
 }
 
 void endSerial() {
