@@ -42,7 +42,7 @@
     }))
       body.append(key, val.toString());
 
-    fetch("/edit", {
+    fetch(global.SET_CONFIG, {
       method: "POST",
       body,
     })
@@ -67,7 +67,7 @@
   async function doUpdateData() {
     if (networkRequest_fetchPromise) return;
 
-    networkRequest_fetchPromise = fetch("/data/networks")
+    networkRequest_fetchPromise = fetch(global.DATA_NETWORKS)
       .then((r) => r.json())
       .then((j: NetworkResult) => {
         let mapping: {
@@ -102,7 +102,7 @@
   let ready = false;
   onMount(() => {
     doUpdateData();
-    fetch("/data/current")
+    fetch(global.DATA_CURRENT)
       .then((r) => r.json())
       .then((j) => {
         ssid = j["ssid"];
