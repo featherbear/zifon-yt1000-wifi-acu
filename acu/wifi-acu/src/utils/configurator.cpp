@@ -111,7 +111,7 @@ void startConfigurator() {
         ESP.restart();
     });
 
-    LittleFS.begin();
+    // LittleFS.begin();
     server->serveStatic("/", LittleFS, "/www/");
 
     server->onNotFound([]() {
