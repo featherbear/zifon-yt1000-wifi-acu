@@ -26,7 +26,7 @@
     setInterval(_send, 400);
   });
 
-  let isDualControl = true;
+  let isDualControl = false;
 </script>
 
 <button class="button" on:click={() => (isDualControl = !isDualControl)}
