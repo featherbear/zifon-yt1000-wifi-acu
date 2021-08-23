@@ -15,11 +15,12 @@ void setup() {
     Serial.begin(9600);
     initSerial(UART_SERIAL_DEV, UART_SERIAL_PIN);
 
-    pinMode(BOOT_CONFIG_PIN, INPUT);
+    // phy: Attach button K2 to BOOT_CONFIG_PIN
+    pinMode(BOOT_CONFIG_PIN, INPUT_PULLUP);
 
     // Check if the boot config pin was held down during init
     // if so, open wireless configurator
-    if (digitalRead(BOOT_CONFIG_PIN) == HIGH) {
+    if (digitalRead(BOOT_CONFIG_PIN) == LOW) {
         Serial.println("Boot config pin pressed...");
         Configurator::startConfigurator();
     }
