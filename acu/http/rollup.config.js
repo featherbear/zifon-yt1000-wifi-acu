@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import { svelteSVG } from "rollup-plugin-svelte-svg";
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
@@ -66,6 +67,11 @@ export default {
 			preventAssignment: true,
 			values: replaceMap
 		}),
+		svelteSVG({
+            // optional SVGO options
+            // pass empty object to enable defaults
+            svgo: {}
+        }),
 		svelte({
 			preprocess: sveltePreprocess({ sourceMap: !production }),
 			compilerOptions: {
