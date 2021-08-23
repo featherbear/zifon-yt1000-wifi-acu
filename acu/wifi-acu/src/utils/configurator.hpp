@@ -1,4 +1,5 @@
 namespace Configurator {
 
+
 void startConfigurator();
 }

@@ -1,8 +1,10 @@
+#include "wifi_settings.hpp"
+
 #include <LittleFS.h>
 
 bool hasInit = false;
 
-namespace Config {
+namespace WifiSettings {
 
 String ssid;
 String password;
@@ -100,4 +102,4 @@ void set_mask(const char *val) {
     f.close();
     mask = String(val);
 }
-}  // namespace Config
+}  // namespace WifiSettings

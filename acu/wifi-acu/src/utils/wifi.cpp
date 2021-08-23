@@ -2,7 +2,7 @@
 
 #include <ArduinoJson.h>
 
-#include "config.hpp"
+#include "wifi_settings.hpp"
 #include "configurator.hpp"
 
 namespace WifiUtils {
@@ -25,7 +25,7 @@ String getSSID() {
 }
 
 void initWiFi() {
-    Config::begin();
+    WifiSettings::begin();
 
     WiFi.onStationModeDisconnected([](const WiFiEventStationModeDisconnected &event) {
         Serial.println("Disconnected from WiFi access point");
@@ -39,22 +39,22 @@ void initWiFi() {
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(("PT-" + getMACPrefix()).c_str());
 
-    if (Config::ssid.isEmpty() || (!Config::isDHCP && (Config::ip.isEmpty() || Config::mask.isEmpty()))) {
+    if (WifiSettings::ssid.isEmpty() || (!WifiSettings::isDHCP && (WifiSettings::ip.isEmpty() || WifiSettings::mask.isEmpty()))) {
         Serial.println("Required WiFi configuration options not set. Starting configurator...");
         Configurator::startConfigurator();
     }
 
-    if (!Config::isDHCP) {
+    if (!WifiSettings::isDHCP) {
         IPAddress localIP;
-        localIP.fromString(Config::ip);
+        localIP.fromString(WifiSettings::ip);
         IPAddress subnetMask;
-        subnetMask.fromString(Config::mask);
+        subnetMask.fromString(WifiSettings::mask);
 
         // Ignore gateway
         WiFi.config(localIP, localIP, subnetMask);
     }
 
-    WiFi.begin(Config::ssid.c_str(), Config::password.isEmpty() ? NULL : Config::password.c_str());
+    WiFi.begin(WifiSettings::ssid.c_str(), WifiSettings::password.isEmpty() ? NULL : WifiSettings::password.c_str());
 }
 
 String discoverNetworks() {

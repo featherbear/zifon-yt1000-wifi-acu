@@ -1,6 +1,6 @@
 #include <WString.h>
 
-namespace Config {
+namespace WifiSettings {
 
 extern String ssid;
 extern String password;

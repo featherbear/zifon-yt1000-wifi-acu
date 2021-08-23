@@ -3,6 +3,8 @@
 #include "arduino-ptz/arduino-ptz.hpp"
 #include "utils/configurator.hpp"
 #include "utils/wifi.hpp"
+#include "www/server.hpp"
+
 
 #define BOOT_CONFIG_PIN D1
 
@@ -18,39 +20,42 @@ void setup() {
     // phy: Attach button K2 to BOOT_CONFIG_PIN
     pinMode(BOOT_CONFIG_PIN, INPUT_PULLUP);
 
+
     // Check if the boot config pin was held down during init
     // if so, open wireless configurator
     if (digitalRead(BOOT_CONFIG_PIN) == LOW) {
         Serial.println("Boot config pin pressed...");
         Configurator::startConfigurator();
+        // Infinite loop
     }
+
+    PT_WWW::init();
 
     WifiUtils::initWiFi();
     WifiUtils::waitForConnect();
+
+    PT_WWW::begin();
+
+    Serial.printf("Connected!");
 }
 
-// unsigned long last = 0;
-// bool flag = true;
+bool flag = true;
 void loop() {
-    if (digitalRead(BOOT_CONFIG_PIN) == HIGH) {
-        Serial.print(".");
+    PT_WWW::tick();
+    if (Serial.read() == '\x20' /* Space bar */ ) {
+        
+        flag = !flag;
+        if (flag) {
+            Serial.print("Enabling...");
+            resumeSerial();
+            Serial.println(" OK");
+        } else {
+            Serial.print("Disabling...");
+            pauseSerial();
+            Serial.println(" OK");
+        }
     }
-    // delay(1000);
-    // if (digitalRead(2) == HIGH && (millis() - last) > 500) {
-    //     last = millis();
 
-    //     flag = !flag;
-    //     if (flag) {
-    //         Serial.print("Enabling...");
-    //         resumeSerial();
-    //         Serial.println(" OK");
-    //     } else {
-    //         Serial.print("Disabling...");
-    //         pauseSerial();
-    //         Serial.println(" OK");
-    //     }
-    // }
-
-    // // Send TILT_UP on channel 10
-    // if (flag) UART_SERIAL_DEV.write("\x6a\xca\x6a");
+    // Send TILT_UP on channel 10
+    if (flag) UART_SERIAL_DEV.write("\x6a\xca\x6a");
 }
