@@ -42,27 +42,43 @@
   let isDualControl = false;
 </script>
 
-<button class="button" on:click={() => (isDualControl = !isDualControl)}
-  >Toggle Mode</button
->
+<div class="container flex-column">
+  {#if isDualControl}
+    <div class="container flex-row">
+      <div class="joystickContainer">
+        <Joystick type="y" emitState={stateEvent}>Y</Joystick>
+      </div>
 
-{#if isDualControl}
-  <div class="joystickContainer">
-    <Joystick type="y" emitState={stateEvent}>Y</Joystick>
-  </div>
+      <div class="joystickContainer">
+        <Joystick type="x" emitState={stateEvent}>X</Joystick>
+      </div>
+    </div>
+  {:else}
+    <div class="joystickContainer">
+      <Joystick type="xy" emitState={stateEvent}>XY</Joystick>
+    </div>
+  {/if}
 
-  <div class="joystickContainer">
-    <Joystick type="x" emitState={stateEvent}>X</Joystick>
-  </div>
-{:else}
-  <div class="joystickContainer">
-    <Joystick type="xy" emitState={stateEvent}>XY</Joystick>
-  </div>
-{/if}
+  <button class="button is-info is-outlined" on:click={() => (isDualControl = !isDualControl)}
+    >Toggle Mode</button
+  >
+</div>
 
 <style lang="scss">
-  .joystickContainer {
-    max-width: 20vw;
-    max-height: 20vw;
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.flex-column {
+      flex-direction: column;
+    }
+
+    *.flex-row {
+      flex-direction: row;
+    }
+  }
+  .joystickContainer > :global(*) {
+    max-width: max(600px, 20vw);
   }
 </style>
