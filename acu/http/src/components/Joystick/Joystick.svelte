@@ -14,13 +14,13 @@
   let xAxisEnabled;
   let yAxisEnabled;
 
+  let activeKeys = [];
+
   $: {
     xAxisEnabled = type.includes("x");
     yAxisEnabled = type.includes("y");
-    handleLoseFocus();
+    if (activeKeys[0]) handleLoseFocus();
   }
-
-  let activeKeys = [];
 
   const KEYS = {
     37: DIRECTIONS.LEFT, // LEFT_ARROW
@@ -36,8 +36,13 @@
   function handleKeydown(evt: KeyboardEvent) {
     const code = evt.keyCode || evt.which;
     if (!KEYS.hasOwnProperty(code)) return;
-    if (!xAxisEnabled && [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])) return;
-    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code])) return;
+    if (
+      !xAxisEnabled &&
+      [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])
+    )
+      return;
+    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code]))
+      return;
 
     registerPress(code);
   }
@@ -45,9 +50,14 @@
   function handleKeyup(evt: KeyboardEvent) {
     const code = evt.keyCode || evt.which;
     if (!KEYS.hasOwnProperty(code)) return;
-    if (!xAxisEnabled && [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])) return;
-    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code])) return;
-    
+    if (
+      !xAxisEnabled &&
+      [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])
+    )
+      return;
+    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code]))
+      return;
+
     unregisterPress(code);
   }
 

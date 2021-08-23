@@ -15,7 +15,8 @@
     buffer = new Uint8Array([(lastVal = val)]);
   }
 
-  let WS = new WebSocket(`ws://${location.hostname}:1337`);
+  // let WS = new WebSocket(`ws://${location.hostname}:1337`);
+  let WS = new WebSocket(`ws://192.168.0.82:1337`);
   WS.addEventListener("open", () => {
     // show things are connected
     setInterval(() => {
