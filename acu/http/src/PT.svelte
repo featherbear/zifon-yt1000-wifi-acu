@@ -3,25 +3,25 @@
     DIRECTIONS as JoystickDirections,
   } from "./components/Joystick";
 
-  let _sendEvent;
-  function sendEvent(direction: JoystickDirections) {
-    _sendEvent?.(direction);
+  function stateEvent(state: boolean, direction?: JoystickDirections) {
+    console.log(state, direction);
+    if (state) updateBuffer(direction);
+    else updateBuffer(0xff);
+  }
+
+  let lastVal;
+  let buffer;
+  function updateBuffer(val) {
+    if (lastVal === val) return buffer;
+    return (buffer = new Uint8Array([(lastVal = val)]));
   }
 
   let WS = new WebSocket(`ws://${location.hostname}:1337`);
   WS.addEventListener("open", () => {
     // show things are connected
-    let lastVal;
-    let lastBuf;
-
-    function makeBuffer(val) {
-      if (lastVal === val) return lastBuf;
-      return (lastBuf = new Uint8Array([(lastVal = val)]));
-    }
-
-    _sendEvent = (direction: JoystickDirections) => {
-      WS.send(makeBuffer(direction));
-    };
+    setInterval(() => {
+      if (buffer) WS.send(buffer);
+    }, 400);
   });
 
   let isDualControl = true;
@@ -33,15 +33,15 @@
 
 {#if isDualControl}
   <div class="joystickContainer">
-    <Joystick type="y" emit={sendEvent}>Y</Joystick>
+    <Joystick type="y" emitState={stateEvent}>Y</Joystick>
   </div>
 
   <div class="joystickContainer">
-    <Joystick type="x" emit={sendEvent}>X</Joystick>
+    <Joystick type="x" emitState={stateEvent}>X</Joystick>
   </div>
 {:else}
   <div class="joystickContainer">
-    <Joystick type="xy" emit={sendEvent}>XY</Joystick>
+    <Joystick type="xy" emitState={stateEvent}>XY</Joystick>
   </div>
 {/if}
 

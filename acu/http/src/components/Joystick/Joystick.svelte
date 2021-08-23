@@ -6,7 +6,8 @@
   import Arrow from "./arrow-up-solid.svg";
   import { DIRECTIONS } from "./types";
 
-  export let emit: (code: DIRECTIONS) => any;
+  export let emitKeystream: (code: DIRECTIONS) => any = null;
+  export let emitState: (state: boolean, code?: DIRECTIONS) => any = null;
 
   export let intervalRate = 25;
 
@@ -35,24 +36,31 @@
   function handleKeydown(evt: KeyboardEvent) {
     const code = evt.keyCode || evt.which;
     if (!KEYS.hasOwnProperty(code)) return;
-    registerPress(code);
-  }
+    if (!xAxisEnabled && [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])) return;
+    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code])) return;
 
-  function registerPress(code) {
-    if (activeKeys[0] === code) return;
-    activeKeys.unshift(code);
-    checkLoop();
+    registerPress(code);
   }
 
   function handleKeyup(evt: KeyboardEvent) {
     const code = evt.keyCode || evt.which;
     if (!KEYS.hasOwnProperty(code)) return;
+    if (!xAxisEnabled && [DIRECTIONS.LEFT, DIRECTIONS.RIGHT].includes(KEYS[code])) return;
+    if (!yAxisEnabled && [DIRECTIONS.UP, DIRECTIONS.DOWN].includes(KEYS[code])) return;
+    
     unregisterPress(code);
   }
 
-  function unregisterPress(code) {
+  function registerPress(key) {
+    if (activeKeys[0] === key) return;
+    activeKeys.unshift(key);
+    emitState?.(true, KEYS[key] ?? key);
+    checkLoop();
+  }
+
+  function unregisterPress(key) {
     let idx;
-    if ((idx = activeKeys.indexOf(code)) == -1) return;
+    if ((idx = activeKeys.indexOf(key)) == -1) return;
     activeKeys.splice(idx, 1);
     checkLoop();
   }
@@ -64,16 +72,19 @@
   let __eventLoopInterval = null;
   function checkLoop() {
     if (__eventLoopInterval) return;
-    __eventLoopInterval = setInterval(function () {
+    function fn() {
       let key = activeKeys[0];
       if (key === undefined) {
         clearInterval(__eventLoopInterval);
         __eventLoopInterval = null;
+        emitState?.(false);
         return;
       }
 
-      emit?.(KEYS[key] ?? key);
-    }, intervalRate);
+      emitKeystream?.(KEYS[key] ?? key);
+    }
+    __eventLoopInterval = setInterval(fn, intervalRate);
+    fn();
   }
 </script>
 

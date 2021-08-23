@@ -66,20 +66,6 @@ void loop() {
     PT_WWW::tick();
     PT_WS::tick();
 
-    // static bool flag = true;
-    // if (Serial.read() == '\x20' /* Space bar */) {
-    //     flag = !flag;
-    //     if (flag) {
-    //         Serial.print("Enabling...");
-    //         resumeSerial();
-    //         Serial.println(" OK");
-    //     } else {
-    //         Serial.print("Disabling...");
-    //         pauseSerial();
-    //         Serial.println(" OK");
-    //     }
-    // }
-
-    // // Send TILT_UP on channel 10
-    // if (flag) UART_SERIAL_DEV.write("\x6a\xca\x6a");
+    uint8_t *buffer = ArduinoPTZ::getSend();
+    if (buffer) UART_SERIAL_DEV.write(buffer, 3);
 }

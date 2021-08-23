@@ -12,6 +12,7 @@ enum DIRECTIONS {
 };
 
 void process(DIRECTIONS direction);
+uint8_t* getSend();
 }
 
 #endif
