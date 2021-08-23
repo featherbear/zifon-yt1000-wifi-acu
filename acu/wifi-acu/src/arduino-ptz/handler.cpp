@@ -7,8 +7,8 @@ uint8_t* buffer;
 uint8_t* _getSend();
 bool firstNullSent = false;
 
-void process(DIRECTIONS direction) {
-    switch (direction) {
+void process(uint8_t val) {
+    switch (val) {
         case DIRECTIONS::UP:
             buffer = LL_MCU_PTZ::GENERATE_MOTOR_INSTRUCTION(LL_MCU_PTZ::CHANNEL::CH_10, LL_MCU_PTZ::DIRECTION::UP);
             break;

@@ -11,7 +11,7 @@ enum DIRECTIONS {
     LEFT
 };
 
-void process(DIRECTIONS direction);
+void process(uint8_t val);
 uint8_t* getSend();
 }
 

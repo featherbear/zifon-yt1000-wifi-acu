@@ -40,22 +40,7 @@ void setup() {
 
     PT_WS::setDataHandler([](uint8_t *payload, size_t length) {
         if (length < 1) return;
-        switch (payload[0]) {
-            case 0:
-                ArduinoPTZ::process(ArduinoPTZ::DIRECTIONS::UP);
-                break;
-            case 1:
-                ArduinoPTZ::process(ArduinoPTZ::DIRECTIONS::RIGHT);
-                break;
-            case 2:
-                ArduinoPTZ::process(ArduinoPTZ::DIRECTIONS::DOWN);
-                break;
-            case 3:
-                ArduinoPTZ::process(ArduinoPTZ::DIRECTIONS::LEFT);
-                break;
-            default:
-                break;
-        }
+        ArduinoPTZ::process(payload[0]);
     });
 
     PT_WS::begin();
