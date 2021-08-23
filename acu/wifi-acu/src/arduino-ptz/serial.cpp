@@ -31,10 +31,11 @@ void pauseSerial() {
 }
 
 void resumeSerial() {
-    pinMode(TX_PIN, OUTPUT);
-
-#if defined(ESP32)
+#if defined(ESP8266)
+    pinMode(TX_PIN, SPECIAL);
+#elif defined(ESP32)
     // esp32-hal-uart::uartAttachTx
+    pinMode(TX_PIN, OUTPUT);
     pinMatrixOutAttach(TX_PIN, FN_PORT, false, false);
 #endif
 }
