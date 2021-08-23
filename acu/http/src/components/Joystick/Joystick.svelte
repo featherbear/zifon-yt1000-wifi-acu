@@ -70,8 +70,19 @@
 
   function unregisterPress(key) {
     let idx;
+    let activeKey = activeKeys[0];
+
     if ((idx = activeKeys.indexOf(key)) == -1) return;
     activeKeys.splice(idx, 1);
+
+    // See if there are other keys held down
+    let nextActiveKey = activeKeys[0];
+    if (activeKey !== nextActiveKey)
+      emitState?.(
+        nextActiveKey !== undefined,
+        KEYS[nextActiveKey] ?? nextActiveKey
+      );
+
     checkLoop();
   }
   function handleLoseFocus(evt?) {
