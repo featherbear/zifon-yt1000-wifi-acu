@@ -4,6 +4,9 @@ namespace ArduinoPTZ {
 
 unsigned long lastCommand = 0;
 uint8_t* buffer;
+uint8_t* _getSend();
+bool firstNullSent = false;
+
 void process(DIRECTIONS direction) {
     switch (direction) {
         case DIRECTIONS::UP:
@@ -26,9 +29,28 @@ void process(DIRECTIONS direction) {
 }
 
 uint8_t* getSend() {
-    if (millis() - lastCommand > 500) {
+    uint8_t* res = _getSend();
+    if (res == NULL) {
+        if (firstNullSent) {
+            pauseSerial();
+        } else {
+            firstNullSent = true;
+        }
+    } else {
+        if (firstNullSent) {
+            resumeSerial();
+            firstNullSent = false;
+        }
+    }
+
+    return res;
+}
+
+uint8_t* _getSend() {
+    if (millis() - lastCommand < 500) {
         return buffer;
     }
+
     return NULL;
 }
 

@@ -4,7 +4,6 @@
   } from "./components/Joystick";
 
   function stateEvent(state: boolean, direction?: JoystickDirections) {
-    console.log(state, direction);
     if (state) updateBuffer(direction);
     else updateBuffer(0xff);
   }
@@ -12,15 +11,15 @@
   let lastVal;
   let buffer;
   function updateBuffer(val) {
-    if (lastVal === val) return buffer;
-    return (buffer = new Uint8Array([(lastVal = val)]));
+    if (lastVal === val) return;
+    buffer = new Uint8Array([(lastVal = val)]);
   }
 
   let WS = new WebSocket(`ws://${location.hostname}:1337`);
   WS.addEventListener("open", () => {
     // show things are connected
     setInterval(() => {
-      if (buffer) WS.send(buffer);
+      WS.send(buffer);
     }, 400);
   });
 
