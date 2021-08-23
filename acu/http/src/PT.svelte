@@ -11,7 +11,7 @@
     _send();
   }
 
-  let WS = new WebSocket(`ws://${location.hostname}:1337`);
+  let WS: WebSocket;
 
   let lastVal;
   let buffer;
@@ -20,11 +20,24 @@
     buffer = new Uint8Array([(lastVal = val)]);
   }
 
-  let _send = () => WS.send(buffer);
-  WS.addEventListener("open", () => {
-    // show things are connected
-    setInterval(_send, 400);
-  });
+  let _send = () => WS?.send(buffer);
+  function connectToWS() {
+    WS = new WebSocket(`ws://${location.hostname}:1337`);
+    // WS = new WebSocket(`ws://192.168.0.82:1337`);
+    let interval;
+    WS.addEventListener("open", () => {
+      // show things are connected
+      interval = setInterval(_send, 400);
+    });
+
+    function reset() {
+      clearInterval(interval);
+      connectToWS();
+    }
+
+    WS.addEventListener("error", reset);
+  }
+  connectToWS();
 
   let isDualControl = false;
 </script>
