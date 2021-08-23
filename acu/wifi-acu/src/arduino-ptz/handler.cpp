@@ -21,7 +21,7 @@ void process(uint8_t val) {
         case DIRECTIONS::LEFT:
             buffer = LL_MCU_PTZ::GENERATE_MOTOR_INSTRUCTION(LL_MCU_PTZ::CHANNEL::CH_10, LL_MCU_PTZ::DIRECTION::LEFT);
             break;
-        case 0xFF:
+        case DIRECTIONS::STOP:
             buffer = NULL;
     }
 

@@ -7,20 +7,29 @@
 
   function stateEvent(state: boolean, direction?: JoystickDirections) {
     if (state) updateBuffer(direction);
-    else updateBuffer(0xff);
+    else updateBuffer(STOP_BYTE);
     _send();
   }
 
+  const STOP_BYTE = 0xff;
   let WS: WebSocket;
 
-  let lastVal;
+  let val;
+  let lastSentWasStop = false;
   let buffer;
-  function updateBuffer(val) {
-    if (lastVal === val) return;
-    buffer = new Uint8Array([(lastVal = val)]);
+  function updateBuffer(nextVal) {
+    if (val === nextVal) return;
+    buffer = new Uint8Array([(val = nextVal)]);
   }
 
-  let _send = () => WS?.send(buffer);
+  let _send = () => {
+    if (val == STOP_BYTE) {
+      if (lastSentWasStop) return;
+      lastSentWasStop = true;
+    } else lastSentWasStop = false;
+
+    WS?.send(buffer);
+  };
   function connectToWS() {
     WS = new WebSocket(`ws://${location.hostname}:1337`);
     // WS = new WebSocket(`ws://192.168.0.82:1337`);
@@ -59,8 +68,9 @@
     </div>
   {/if}
 
-  <button class="button is-info is-outlined" on:click={() => (isDualControl = !isDualControl)}
-    >Toggle Mode</button
+  <button
+    class="button is-info is-outlined"
+    on:click={() => (isDualControl = !isDualControl)}>Toggle Mode</button
   >
 </div>
 

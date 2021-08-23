@@ -8,7 +8,8 @@ enum DIRECTIONS {
     UP,
     RIGHT,
     DOWN,
-    LEFT
+    LEFT,
+    STOP = 0xFF
 };
 
 void process(uint8_t val);
