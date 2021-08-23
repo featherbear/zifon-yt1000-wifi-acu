@@ -31,12 +31,12 @@ void setup() {
 
     WifiUtils::initWiFi();
 
-    Serial.printf("Connecting to %s...\n", WifiUtils::getSSID());
+    Serial.printf("Connecting to %s...\n", WifiUtils::getSSID().c_str());
 
     WifiUtils::waitForConnect();
 
     PT_WWW::begin();
-    Serial.printf("Connected - IP %s (%s)\n", WifiUtils::getIPAddress(), WifiUtils::getHostname());
+    Serial.printf("Connected - IP %s (%s)\n", WifiUtils::getIPAddress().c_str(), WifiUtils::getHostname().c_str());
 }
 
 bool flag = true;

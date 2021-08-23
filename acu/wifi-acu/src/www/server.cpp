@@ -47,7 +47,7 @@ void begin() {
         if (path.endsWith("/")) path += "index.html";
 
         if (!LittleFS.exists(path)) {
-            Serial.println("\tFile Not Found");
+            // Serial.println("\tFile Not Found");
             server->send(404, FPSTR(CONTENT_TYPES::PLAIN), "404: Not Found");
             return;
         }
