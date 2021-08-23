@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { send } from "ionicons/icons";
+
   import Joystick, {
     DIRECTIONS as JoystickDirections,
   } from "./components/Joystick";
@@ -6,7 +8,10 @@
   function stateEvent(state: boolean, direction?: JoystickDirections) {
     if (state) updateBuffer(direction);
     else updateBuffer(0xff);
+    _send();
   }
+
+  let WS = new WebSocket(`ws://${location.hostname}:1337`);
 
   let lastVal;
   let buffer;
@@ -15,13 +20,10 @@
     buffer = new Uint8Array([(lastVal = val)]);
   }
 
-  // let WS = new WebSocket(`ws://${location.hostname}:1337`);
-  let WS = new WebSocket(`ws://192.168.0.82:1337`);
+  let _send = () => WS.send(buffer);
   WS.addEventListener("open", () => {
     // show things are connected
-    setInterval(() => {
-      WS.send(buffer);
-    }, 400);
+    setInterval(_send, 400);
   });
 
   let isDualControl = true;
