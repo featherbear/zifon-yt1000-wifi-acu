@@ -5,5 +5,6 @@
 
 #include "../mcu-ptz.h"
 #include "serial.hpp"
+#include "handler.hpp"
 
 #endif

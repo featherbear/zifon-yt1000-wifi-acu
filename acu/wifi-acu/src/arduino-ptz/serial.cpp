@@ -1,5 +1,6 @@
 #include "serial.hpp"
 
+namespace ArduinoPTZ {
 uint8_t TX_PIN;
 uint8_t FN_PORT;
 HardwareSerial* SERIAL_INSTANCE;
@@ -7,7 +8,7 @@ HardwareSerial* SERIAL_INSTANCE;
 void initSerial(HardwareSerial& serialInstance, uint8_t txPin) {
     SERIAL_INSTANCE = &serialInstance;
     TX_PIN = txPin;
-    SERIAL_INSTANCE->begin(PT__SERIAL_BAUD);
+    SERIAL_INSTANCE->begin(LL_MCU_PTZ::SERIAL_BAUD);
 }
 
 void initSerial(HardwareSerial& serialInstance, uint8_t txPin, uint8_t function) {
@@ -18,8 +19,6 @@ void initSerial(HardwareSerial& serialInstance, uint8_t txPin, uint8_t function)
 void endSerial() {
     SERIAL_INSTANCE->end();
 }
-
-// TODO: See if the ESP8266 needs to call the interrupt detach
 
 void pauseSerial() {
 #if defined(ESP32)
@@ -39,3 +38,4 @@ void resumeSerial() {
     pinMatrixOutAttach(TX_PIN, FN_PORT, false, false);
 #endif
 }
+}  // namespace ArduinoPTZ

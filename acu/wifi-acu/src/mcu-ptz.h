@@ -1,9 +1,11 @@
-#define PT__SERIAL_BAUD 9600
+namespace LL_MCU_PTZ {
+
+const unsigned long SERIAL_BAUD = 9600;
 
 /**
  * RF Channel
  */
-enum PT__CHANNEL {
+enum CHANNEL {
     CH_0,
     CH_1,
     CH_2,
@@ -29,7 +31,7 @@ enum PT__CHANNEL {
 /**
  * Motor Direction
  */
-enum PT__DIRECTION {
+enum DIRECTION {
     UP = 0xCA,    // Tilt Up
     DOWN = 0xC5,  // Tilt down
     LEFT = 0XCC,  // Pan Left
@@ -39,7 +41,7 @@ enum PT__DIRECTION {
 /**
  * Speed for the Pan / Tilt motor
  */
-enum PT__PAN_TILT_SPEED {
+enum PAN_TILT_SPEED {
     SPEED_1 = 1,
     SPEED_2 = 2,
     SPEED_3 = 3,
@@ -50,17 +52,17 @@ enum PT__PAN_TILT_SPEED {
     SPEED_8 = 8,
 };
 
-inline uint8_t PT__GENERATE_CHANNEL_BYTE(enum PT__CHANNEL x) { return 0x60 + x; }
-inline uint8_t PT__GENERATE_PAN_SPEED_BYTE(enum PT__PAN_TILT_SPEED x) { return 0xA0 + x; }
-inline uint8_t PT__GENERATE_TILT_SPEED_BYTE(enum PT__PAN_TILT_SPEED x) { return 0x50 + x; }
+inline uint8_t GENERATE_CHANNEL_BYTE(enum CHANNEL x) { return 0x60 + x; }
+inline uint8_t GENERATE_PAN_SPEED_BYTE(enum PAN_TILT_SPEED x) { return 0xA0 + x; }
+inline uint8_t GENERATE_TILT_SPEED_BYTE(enum PAN_TILT_SPEED x) { return 0x50 + x; }
 
 /**
  * Generate the 3-byte pan speed packet
  * Note: Make a copy of the returned value immediately! (ceebs allocating memory)
  */
-inline uint8_t* PT__GENERATE_PAN_SPEED_INSTRUCTION(enum PT__CHANNEL channel, enum PT__PAN_TILT_SPEED speed) {
+inline uint8_t* GENERATE_PAN_SPEED_INSTRUCTION(enum CHANNEL channel, enum PAN_TILT_SPEED speed) {
     static uint8_t buff[3] = {};
-    buff[0] = buff[2] = PT__GENERATE_CHANNEL_BYTE(channel);
+    buff[0] = buff[2] = GENERATE_CHANNEL_BYTE(channel);
     buff[1] = speed;
     return buff;
 }
@@ -69,9 +71,9 @@ inline uint8_t* PT__GENERATE_PAN_SPEED_INSTRUCTION(enum PT__CHANNEL channel, enu
  * Generate the 3-byte tilt speed instruction packet
  * Note: Make a copy of the returned value immediately! (ceebs allocating memory)
  */
-inline uint8_t* PT__GENERATE_TILT_SPEED_INSTRUCTION(enum PT__CHANNEL channel, enum PT__PAN_TILT_SPEED speed) {
+inline uint8_t* GENERATE_TILT_SPEED_INSTRUCTION(enum CHANNEL channel, enum PAN_TILT_SPEED speed) {
     static uint8_t buff[3] = {};
-    buff[0] = buff[2] = PT__GENERATE_CHANNEL_BYTE(channel);
+    buff[0] = buff[2] = GENERATE_CHANNEL_BYTE(channel);
     buff[1] = speed;
     return buff;
 }
@@ -80,17 +82,17 @@ inline uint8_t* PT__GENERATE_TILT_SPEED_INSTRUCTION(enum PT__CHANNEL channel, en
  * Generate the 3-byte motor instruction packet
  * Note: Make a copy of the returned value immediately! (ceebs allocating memory)
  */
-inline uint8_t* PT__GENERATE_MOTOR_INSTRUCTION(enum PT__CHANNEL channel, enum PT__DIRECTION direction) {
+inline uint8_t* GENERATE_MOTOR_INSTRUCTION(enum CHANNEL channel, enum DIRECTION direction) {
     static uint8_t buff[3] = {};
-    buff[0] = buff[2] = PT__GENERATE_CHANNEL_BYTE(channel);
+    buff[0] = buff[2] = GENERATE_CHANNEL_BYTE(channel);
     buff[1] = direction;
     return buff;
 }
 
-inline bool PT__IS_PAN_SPEED_BYTE(uint8_t byte) { return !((0xF0 & byte) ^ 0xA0); }
-inline bool PT__IS_TILT_SPEED_BYTE(uint8_t byte) { return !((0xF0 & byte) ^ 0x50); }
-inline bool PT__IS_DIRECTION_BYTE(uint8_t byte) {
-    switch ((enum PT__DIRECTION)byte) {
+inline bool IS_PAN_SPEED_BYTE(uint8_t byte) { return !((0xF0 & byte) ^ 0xA0); }
+inline bool IS_TILT_SPEED_BYTE(uint8_t byte) { return !((0xF0 & byte) ^ 0x50); }
+inline bool IS_DIRECTION_BYTE(uint8_t byte) {
+    switch ((enum DIRECTION)byte) {
         case UP:
         case DOWN:
         case LEFT:
@@ -101,4 +103,5 @@ inline bool PT__IS_DIRECTION_BYTE(uint8_t byte) {
     }
 }
 
-inline bool PT__IS_CHANNEL_BYTE(uint8_t byte) { return 0x60 <= byte && byte <= 0x73; }
+inline bool IS_CHANNEL_BYTE(uint8_t byte) { return 0x60 <= byte && byte <= 0x73; }
+}
