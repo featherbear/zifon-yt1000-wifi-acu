@@ -119,15 +119,15 @@
   {#if yAxisEnabled}
     <div
       class="control controlUp"
-      on:mousedown={() => registerPress(DIRECTIONS.UP)}
-      on:mouseup={() => unregisterPress(DIRECTIONS.UP)}
+      on:pointerdown={() => registerPress(DIRECTIONS.UP)}
+      on:pointerup={() => unregisterPress(DIRECTIONS.UP)}
     >
       <Arrow />
     </div>
     <div
       class="control controlDown"
-      on:mousedown={() => registerPress(DIRECTIONS.DOWN)}
-      on:mouseup={() => unregisterPress(DIRECTIONS.DOWN)}
+      on:pointerdown={() => registerPress(DIRECTIONS.DOWN)}
+      on:pointerup={() => unregisterPress(DIRECTIONS.DOWN)}
     >
       <Arrow />
     </div>
@@ -135,15 +135,15 @@
   {#if xAxisEnabled}
     <div
       class="control controlLeft"
-      on:mousedown={() => registerPress(DIRECTIONS.LEFT)}
-      on:mouseup={() => unregisterPress(DIRECTIONS.LEFT)}
+      on:pointerdown={() => registerPress(DIRECTIONS.LEFT)}
+      on:pointerup={() => unregisterPress(DIRECTIONS.LEFT)}
     >
       <Arrow />
     </div>
     <div
       class="control controlRight"
-      on:mousedown={() => registerPress(DIRECTIONS.RIGHT)}
-      on:mouseup={() => unregisterPress(DIRECTIONS.RIGHT)}
+      on:pointerdown={() => registerPress(DIRECTIONS.RIGHT)}
+      on:pointerup={() => unregisterPress(DIRECTIONS.RIGHT)}
     >
       <Arrow />
     </div>
