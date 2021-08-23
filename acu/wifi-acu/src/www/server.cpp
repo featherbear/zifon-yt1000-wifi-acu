@@ -9,7 +9,7 @@
 namespace PT_WWW {
 
 std::unique_ptr<WebServer> server = NULL;
-static String serverMode = "";
+String serverMode = "";
 
 static String getContentType(String filename) {
     if (filename.endsWith(".html"))
@@ -32,13 +32,14 @@ void setMode(String mode) {
 void init() {
     server = std::unique_ptr<WebServer>(new WebServer(80));
 
-    // LittleFS.begin();
-    server->serveStatic("/", LittleFS, "/www/");
-
     server->on(FPSTR("/mode"), []() {
         if (PT_WWW::server->method() != HTTP_GET) return PT_WWW::server->close();
         PT_WWW::server->send(200, FPSTR(CONTENT_TYPES::PLAIN), serverMode);
     });
+}
+
+void begin() {
+    server->serveStatic("/", LittleFS, "/www/");
 
     server->onNotFound([]() {
         String path = server->uri();
@@ -55,9 +56,6 @@ void init() {
         server->streamFile(file, getContentType(path));
         file.close();
     });
-}
-
-void begin() {
     server->begin();
 }
 

@@ -5,7 +5,6 @@
 #include "utils/wifi.hpp"
 #include "www/server.hpp"
 
-
 #define BOOT_CONFIG_PIN D1
 
 #define UART_SERIAL_DEV Serial1
@@ -20,7 +19,6 @@ void setup() {
     // phy: Attach button K2 to BOOT_CONFIG_PIN
     pinMode(BOOT_CONFIG_PIN, INPUT_PULLUP);
 
-
     // Check if the boot config pin was held down during init
     // if so, open wireless configurator
     if (digitalRead(BOOT_CONFIG_PIN) == LOW) {
@@ -32,18 +30,19 @@ void setup() {
     PT_WWW::init();
 
     WifiUtils::initWiFi();
+
+    Serial.printf("Connecting to %s...\n", WifiUtils::getSSID());
+
     WifiUtils::waitForConnect();
 
     PT_WWW::begin();
-
-    Serial.printf("Connected!");
+    Serial.printf("Connected - IP %s (%s)\n", WifiUtils::getIPAddress(), WifiUtils::getHostname());
 }
 
 bool flag = true;
 void loop() {
     PT_WWW::tick();
-    if (Serial.read() == '\x20' /* Space bar */ ) {
-        
+    if (Serial.read() == '\x20' /* Space bar */) {
         flag = !flag;
         if (flag) {
             Serial.print("Enabling...");
