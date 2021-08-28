@@ -24,7 +24,7 @@ Will however not allow both motors to operate simultaneously as the original MCU
 
 EDIT: Use MCU's internal pullup resistor mode
 
-EDIT: Spamming alternate axis mpvement instructions isn't very efficient
+EDIT: Spamming alternate axis movement instructions isn't very efficient
 
 ---
 
